@@ -10,6 +10,8 @@ public class LocalPost extends RealmObject {
     private long id;
     private String title;
     private String body;
+    private boolean isRead;
+    private boolean isFavorite;
 
     public long getUserId() {
         return userId;
@@ -41,5 +43,21 @@ public class LocalPost extends RealmObject {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

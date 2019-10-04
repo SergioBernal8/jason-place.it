@@ -1,39 +1,46 @@
 package com.example.json.place.it.ui.main
 
-import android.util.Log
-import androidx.lifecycle.*
-
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.json.place.it.data.base.response.DataResponse
 import com.example.json.place.it.data.base.response.ServerResponse
 import com.example.json.place.it.data.repository.PostRepository
 import com.example.json.place.it.domain.manager.RealmManager
 import com.example.json.place.it.domain.model.Post
+import com.example.json.place.it.domain.model.realm.LocalPost
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+
+
+enum class Filter {
+    ALL, FAVORITES
+}
 
 internal class MainViewModel : ViewModel() {
 
-    private val posts = MutableLiveData<Post>()
-    private var allData = MutableLiveData<DataResponse<List<Post>>>()
+    private val allLocalPosts = MutableLiveData<List<LocalPost>>()
+    private val filteredPosts = MutableLiveData<List<LocalPost>>()
+    private var allRemotePosts = MutableLiveData<DataResponse<List<Post>>>()
 
     private var manager: RealmManager? = null
 
-    val data: LiveData<Post>
-        get() = posts
+    val localPosts: LiveData<List<LocalPost>>
+        get() = filteredPosts
 
-    fun loadPosts() {
+    val remotePosts: LiveData<DataResponse<List<Post>>>
+        get() = allRemotePosts
+
+    private fun loadPosts() {
         val repository = PostRepository.getInstance()
-        allData = repository.allPosts
+        allRemotePosts = repository.allPosts
 
-        allData.observeForever { listDataResponse ->
+        allRemotePosts.observeForever { listDataResponse ->
             if (listDataResponse.response == ServerResponse.CASE_SUCCESS) {
-                for (post in listDataResponse.data) {
-                    savePostLocal(post)
-                    posts.value = post
+                for (i in listDataResponse.data.indices) {
+                    savePostLocal(listDataResponse.data[i], i >= 20)
                 }
                 getAllPostFromLocal()
-            } else {
-                // handle error
             }
         }
     }
@@ -42,19 +49,42 @@ internal class MainViewModel : ViewModel() {
         manager = RealmManager()
     }
 
-    private fun savePostLocal(post: Post) {
-        viewModelScope.async {
-            manager!!.addPost(post)
+    fun filterData(filter: Filter) {
+        if (filter == Filter.ALL) {
+            filteredPosts.value = allLocalPosts.value
+        } else {
+            filteredPosts.value = allLocalPosts.value?.filter { it.isFavorite }?.toList()
         }
     }
 
-    private fun getAllPostFromLocal() {
-        val all = manager!!.allPost
-        Log.e("TAG", "list size: " + all.size)
+    private fun savePostLocal(post: Post, withBlueDot: Boolean = false) {
+        viewModelScope.async {
+            manager?.addPost(post, withBlueDot)
+        }
     }
 
-    fun getAllData(): LiveData<DataResponse<List<Post>>> {
-        return allData
+    fun getAllPostFromLocal() {
+        val all = manager!!.allPost
+
+        if (all.isEmpty())
+            loadPosts()
+        else {
+            allLocalPosts.value = all
+            filteredPosts.value = all
+        }
+    }
+
+    fun clearAllLocalData() {
+        viewModelScope.async {
+            manager?.clearAllLocalPost()
+            loadPosts()
+        }
+    }
+
+    fun deletePostWithId(id: Long) {
+        viewModelScope.async {
+            manager?.deletePost(id)
+        }
     }
 
 }

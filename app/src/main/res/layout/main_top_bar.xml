@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolbarTheme">
+
+        <ImageButton
+            android:id="@+id/toolbarImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal|end"
+            android:layout_marginEnd="10dp"
+            android:background="@color/clear"
+            android:scaleType="fitXY"
+            android:contentDescription="toolbar" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+</LinearLayout>
