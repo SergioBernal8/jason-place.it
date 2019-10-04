@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.json.place.it.R;
+import com.example.json.place.it.domain.model.realm.LocalPost;
 import com.example.json.place.it.ui.custom.SwipeAndDeleteCallback;
 import com.google.android.material.tabs.TabLayout;
 
@@ -35,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new PostAdapter();
+
+        OnItemClickListener listener = item -> {
+
+        };
+
+        mAdapter = new PostAdapter(listener);
 
         SwipeAndDeleteCallback swipeGesture = new SwipeAndDeleteCallback(this) {
             @Override

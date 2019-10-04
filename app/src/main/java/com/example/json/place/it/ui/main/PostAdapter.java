@@ -1,6 +1,7 @@
 package com.example.json.place.it.ui.main;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,11 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     private List<LocalPost> data;
+    private final OnItemClickListener listener;
 
-    PostAdapter() {
+    PostAdapter(OnItemClickListener listener) {
         this.data = new ArrayList<>();
+        this.listener = listener;
     }
 
     @NonNull
@@ -28,12 +31,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         PostListItemBinding itemBinding = DataBindingUtil.inflate(inflater, R.layout.post_list_item, parent, false);
-        return new PostViewHolder(itemBinding);
+        return new PostViewHolder(itemBinding, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         holder.binding.setPost(data.get(position));
+        holder.binding.getRoot().setOnClickListener(v -> holder.listener.onItemClick(data.get(position)));
     }
 
 
@@ -42,7 +46,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         notifyDataSetChanged();
     }
 
-    public void deleteItem(int position){
+    public void deleteItem(int position) {
         data.remove(position);
         notifyDataSetChanged();
     }
@@ -54,10 +58,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         PostListItemBinding binding;
+        OnItemClickListener listener;
 
-        PostViewHolder(PostListItemBinding binding) {
+        PostViewHolder(PostListItemBinding binding, OnItemClickListener listener) {
             super(binding.getRoot());
             this.binding = binding;
+            this.listener = listener;
         }
     }
+}
+
+interface OnItemClickListener {
+    void onItemClick(LocalPost item);
 }
