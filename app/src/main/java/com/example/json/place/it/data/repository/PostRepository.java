@@ -1,16 +1,13 @@
 package com.example.json.place.it.data.repository;
 
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.json.place.it.data.base.BaseRepository;
-import com.example.json.place.it.data.base.response.DataResponse;
 import com.example.json.place.it.data.base.api.PostAPI;
+import com.example.json.place.it.data.base.response.DataResponse;
 import com.example.json.place.it.data.base.response.ServerResponse;
 import com.example.json.place.it.domain.model.Post;
-
 
 import java.util.List;
 
@@ -36,23 +33,21 @@ public class PostRepository {
         api = BaseRepository.createInstance(PostAPI.class);
     }
 
-    public MutableLiveData<DataResponse<Post>> getAllPosts() {
-        final MutableLiveData<DataResponse<Post>> data = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<List<Post>>> getAllPosts() {
+        final MutableLiveData<DataResponse<List<Post>>> data = new MutableLiveData<>();
 
         api.getAllPosts().enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    for (Post post : response.body()) {
-                        data.setValue(new DataResponse<>(post, ServerResponse.CASE_SUCCESS));
-                    }
+                    data.setValue(new DataResponse<>(response.body(), ServerResponse.CASE_SUCCESS));
                 } else
-                    data.setValue(new DataResponse<Post>(null, ServerResponse.CASE_EMPTY_RESPONSE));
+                    data.setValue(new DataResponse<List<Post>>(null, ServerResponse.CASE_EMPTY_RESPONSE));
             }
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                data.setValue(new DataResponse<Post>(null, ServerResponse.CASE_EMPTY_RESPONSE));
+                data.setValue(new DataResponse<List<Post>>(null, ServerResponse.CASE_EMPTY_RESPONSE));
             }
         });
 

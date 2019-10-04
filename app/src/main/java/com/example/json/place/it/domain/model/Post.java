@@ -1,5 +1,6 @@
 package com.example.json.place.it.domain.model;
 
+import com.example.json.place.it.domain.model.realm.LocalPost;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -50,4 +51,10 @@ public class Post {
         this.body = body;
     }
 
+    public Post(LocalPost localPost) {
+        this.userId = (int) localPost.getUserId();
+        this.id = (int) localPost.getId();
+        this.title = localPost.getTitle();
+        this.body = localPost.getBody();
+    }
 }

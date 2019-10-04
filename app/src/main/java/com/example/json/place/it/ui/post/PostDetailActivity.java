@@ -1,8 +1,8 @@
 package com.example.json.place.it.ui.post;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.json.place.it.R;
 

@@ -1,14 +1,13 @@
 package com.example.json.place.it.ui.main;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.os.Bundle;
-
 import com.example.json.place.it.R;
-import com.example.json.place.it.data.base.response.DataResponse;
-import com.example.json.place.it.data.base.response.ServerResponse;
 import com.example.json.place.it.domain.model.Post;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,16 +20,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         model = ViewModelProviders.of(this).get(MainViewModel.class);
-        model.start();
-        model.getData().observe(this, new Observer<DataResponse<Post>>() {
+        model.init();
+        model.loadPosts();
+        model.getData().observe(this, new Observer<Post>() {
             @Override
-            public void onChanged(DataResponse<Post> responseData) {
-                if (responseData.response == ServerResponse.CASE_SUCCESS) {
-
-                } else {
-
-                }
+            public void onChanged(Post post) {
+                Log.e("TAG", post.getTitle());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        model.getAllData().removeObservers(this);
     }
 }
