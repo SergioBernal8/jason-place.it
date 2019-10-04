@@ -2,7 +2,6 @@ package com.example.json.place.it;
 
 import android.content.Context;
 
-
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
