@@ -1,7 +1,6 @@
-package com.example.json.place.it.ui.main;
+package com.example.json.place.it.ui.main.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<LocalPost> data;
     private final OnItemClickListener listener;
 
-    PostAdapter(OnItemClickListener listener) {
+    public PostAdapter(OnItemClickListener listener) {
         this.data = new ArrayList<>();
         this.listener = listener;
     }
@@ -68,6 +67,3 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 }
 
-interface OnItemClickListener {
-    void onItemClick(LocalPost item);
-}

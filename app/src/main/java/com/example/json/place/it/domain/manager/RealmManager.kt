@@ -18,6 +18,7 @@ class RealmManager {
             return realm.copyFromRealm(results)
         }
 
+
     suspend fun addPost(post: Post, withBlueDot: Boolean = true) {
         val localPost = LocalPost()
         localPost.userId = post.userId!!.toLong()
@@ -46,6 +47,12 @@ class RealmManager {
         }
     }
 
+    fun getPost(id: Long): LocalPost? {
+        val realm = Realm.getDefaultInstance()
+
+        return realm.where(LocalPost::class.java).equalTo("id", id).findFirst()
+    }
+
     suspend fun deletePost(id: Long) {
         val realm = Realm.getDefaultInstance()
 
@@ -53,6 +60,30 @@ class RealmManager {
             realm.beginTransaction()
             val obj = realm.where(LocalPost::class.java).equalTo("id", id).findFirst()
             obj?.deleteFromRealm()
+            realm.commitTransaction()
+            Log.i(TAG, "transaction finished")
+        }
+    }
+
+    suspend fun markPostFavorite(id: Long, favorite: Boolean) {
+        val realm = Realm.getDefaultInstance()
+
+        coroutineScope {
+            realm.beginTransaction()
+            val obj = realm.where(LocalPost::class.java).equalTo("id", id).findFirst()
+            obj?.isFavorite = favorite
+            realm.commitTransaction()
+            Log.i(TAG, "transaction finished")
+        }
+    }
+
+    suspend fun markPostRead(id: Long) {
+        val realm = Realm.getDefaultInstance()
+
+        coroutineScope {
+            realm.beginTransaction()
+            val obj = realm.where(LocalPost::class.java).equalTo("id", id).findFirst()
+            obj?.isRead = true
             realm.commitTransaction()
             Log.i(TAG, "transaction finished")
         }

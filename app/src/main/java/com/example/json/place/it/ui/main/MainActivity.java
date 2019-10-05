@@ -1,5 +1,6 @@
 package com.example.json.place.it.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.json.place.it.R;
+import com.example.json.place.it.domain.model.realm.LocalPost;
 import com.example.json.place.it.ui.custom.SwipeAndDeleteCallback;
+import com.example.json.place.it.ui.main.adapter.OnItemClickListener;
+import com.example.json.place.it.ui.main.adapter.PostAdapter;
+import com.example.json.place.it.ui.post.PostDetailActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 
@@ -24,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel model;
     private PostAdapter mAdapter;
     private ProgressBar progressBar;
+    private Filter filter = Filter.ALL;
+    private boolean firStart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +44,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
 
-        OnItemClickListener listener = item -> {
-
-        };
+        OnItemClickListener listener = this::goToDetails;
 
         mAdapter = new PostAdapter(listener);
 
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeGesture);
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
@@ -66,14 +73,20 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.post);
         TabLayout tabLayout = findViewById(R.id.tab_layout_main);
 
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(v -> {
+            model.clearAllLocalData(false);
+        });
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 0) {
-                    model.filterData(Filter.ALL);
-                } else {
-                    model.filterData(Filter.FAVORITES);
-                }
+                if (tab.getPosition() == 0)
+                    filter = Filter.ALL;
+                else
+                    filter = Filter.FAVORITES;
+
+                model.filterData(filter);
             }
 
             @Override
@@ -91,19 +104,35 @@ public class MainActivity extends AppCompatActivity {
 
         toolbarButton.setImageResource(R.mipmap.ic_refresh);
         toolbarButton.setOnClickListener(v -> {
+            tabLayout.getTabAt(0).select();
             progressBar.setVisibility(View.VISIBLE);
-            model.clearAllLocalData();
+            model.clearAllLocalData(true);
         });
 
         recyclerView.setAdapter(mAdapter);
 
         model = ViewModelProviders.of(this).get(MainViewModel.class);
         model.init();
-        model.getAllPostFromLocal();
+        model.getAllPostFromLocal(filter);
         model.getLocalPosts().observe(this, localPosts -> {
             mAdapter.setData(localPosts);
             progressBar.setVisibility(View.GONE);
+            if (!firStart) firStart = true;
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (firStart) {
+            model.getAllPostFromLocal(filter);
+        }
+    }
+
+    private void goToDetails(LocalPost localPost) {
+        Intent intent = new Intent(this, PostDetailActivity.class);
+        intent.putExtra("postId", localPost.getId());
+        startActivity(intent);
     }
 
     @Override

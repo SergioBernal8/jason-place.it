@@ -23,7 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.post.PostDetailActivity" />
+        <activity
+            android:name=".ui.post.PostDetailActivity"
+            android:theme="@style/AppThemeNoActionBar" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

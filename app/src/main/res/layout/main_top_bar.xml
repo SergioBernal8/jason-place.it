@@ -30,6 +30,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal|end"
             android:layout_marginEnd="10dp"
+            android:tint="@color/white"
             android:background="@color/clear"
             android:contentDescription="toolbar"
             android:scaleType="fitXY" />
