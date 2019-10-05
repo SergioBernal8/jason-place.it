@@ -5,4 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.post.PostDetailActivity">
 
+    <include
+        android:id="@+id/main_top"
+        layout="@layout/main_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

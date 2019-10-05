@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.json.place.it.R;
-import com.example.json.place.it.domain.model.realm.LocalPost;
 import com.example.json.place.it.ui.custom.SwipeAndDeleteCallback;
 import com.google.android.material.tabs.TabLayout;
 
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        Toolbar toolbar = findViewById(R.id.toolbarMain);
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
         ImageButton toolbarButton = toolbar.findViewById(R.id.toolbarImageButton);
         toolbar.setTitle(R.string.post);
         TabLayout tabLayout = findViewById(R.id.tab_layout_main);
