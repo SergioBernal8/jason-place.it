@@ -5,5 +5,6 @@ public class APIConstants {
     public final static String BASE_URL = "https://jsonplaceholder.typicode.com";
     final static String PATH_POST = "/posts";
     final static String PATH_POST_COMMENTS = "/comments?";
+    final static String PATH_USERS = "/users?";
 
 }

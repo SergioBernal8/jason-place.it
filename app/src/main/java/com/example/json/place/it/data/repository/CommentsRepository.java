@@ -31,23 +31,21 @@ public class CommentsRepository {
         api = BaseRepository.createInstance(CommentsAPI.class);
     }
 
-    public MutableLiveData<DataResponse<Comment>> getCommentsForPost(final int postId) {
-        final MutableLiveData<DataResponse<Comment>> data = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<List<Comment>>> getCommentsForPost(final long postId) {
+        final MutableLiveData<DataResponse<List<Comment>>> data = new MutableLiveData<>();
 
         api.getCommentsForPost(postId).enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    for (Comment comment : response.body())
-                        data.setValue(new DataResponse<>(comment, ServerResponse.CASE_SUCCESS));
-
+                    data.setValue(new DataResponse<>(response.body(), ServerResponse.CASE_SUCCESS));
                 } else
-                    data.setValue(new DataResponse<Comment>(null, ServerResponse.CASE_EMPTY_RESPONSE));
+                    data.setValue(new DataResponse<>(null, ServerResponse.CASE_EMPTY_RESPONSE));
             }
 
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
-                data.setValue(new DataResponse<Comment>(null, ServerResponse.CASE_ERROR));
+                data.setValue(new DataResponse<>(null, ServerResponse.CASE_ERROR));
             }
         });
 

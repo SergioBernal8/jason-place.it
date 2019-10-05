@@ -42,12 +42,12 @@ public class PostRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     data.setValue(new DataResponse<>(response.body(), ServerResponse.CASE_SUCCESS));
                 } else
-                    data.setValue(new DataResponse<List<Post>>(null, ServerResponse.CASE_EMPTY_RESPONSE));
+                    data.setValue(new DataResponse<>(null, ServerResponse.CASE_EMPTY_RESPONSE));
             }
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                data.setValue(new DataResponse<List<Post>>(null, ServerResponse.CASE_EMPTY_RESPONSE));
+                data.setValue(new DataResponse<>(null, ServerResponse.CASE_EMPTY_RESPONSE));
             }
         });
 

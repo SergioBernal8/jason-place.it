@@ -40,7 +40,7 @@ internal class MainViewModel : ViewModel() {
                 for (i in listDataResponse.data.indices) {
                     savePostLocal(listDataResponse.data[i], i >= 20)
                 }
-                getAllPostFromLocal()
+                getAllPostFromLocal(Filter.ALL)
             }
         }
     }
@@ -50,11 +50,10 @@ internal class MainViewModel : ViewModel() {
     }
 
     fun filterData(filter: Filter) {
-        if (filter == Filter.ALL) {
+        if (filter == Filter.ALL)
             filteredPosts.value = allLocalPosts.value
-        } else {
+        else
             filteredPosts.value = allLocalPosts.value?.filter { it.isFavorite }?.toList()
-        }
     }
 
     private fun savePostLocal(post: Post, withBlueDot: Boolean = false) {
@@ -63,21 +62,26 @@ internal class MainViewModel : ViewModel() {
         }
     }
 
-    fun getAllPostFromLocal() {
+    fun getAllPostFromLocal(filter: Filter) {
         val all = manager!!.allPost
 
         if (all.isEmpty())
             loadPosts()
         else {
             allLocalPosts.value = all
-            filteredPosts.value = all
+            filterData(filter)
         }
     }
 
-    fun clearAllLocalData() {
+    fun clearAllLocalData(shouldLoad: Boolean) {
         viewModelScope.async {
             manager?.clearAllLocalPost()
-            loadPosts()
+            if (shouldLoad)
+                loadPosts()
+            else {
+                allLocalPosts.value = emptyList()
+                filteredPosts.value = emptyList()
+            }
         }
     }
 

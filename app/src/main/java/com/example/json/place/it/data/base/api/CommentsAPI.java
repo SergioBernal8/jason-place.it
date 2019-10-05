@@ -12,5 +12,5 @@ import retrofit2.http.Query;
 public interface CommentsAPI {
 
     @GET(APIConstants.PATH_POST_COMMENTS)
-    Call<List<Comment>> getCommentsForPost(@Query("postId") int postId);
+    Call<List<Comment>> getCommentsForPost(@Query("postId") long postId);
 }
